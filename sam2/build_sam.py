@@ -140,17 +140,24 @@ def build_sam2_video_predictor(
         model.eval()
     return model
 
-def build_sam2_video_predictor(
+def build_sam2_camera_predictor(
     config_file,
     ckpt_path=None,
     device="cuda",
     mode="eval",
     hydra_overrides_extra=[],
     apply_postprocessing=True,
+    vos_optimized=False,
 ):
     hydra_overrides = [
-        "++model._target_=sam2.sam2_video_predictor.SAM2VideoPredictor",
+        "++model._target_=sam2.sam2_camera_predictor.SAM2CameraPredictor",
     ]
+
+    if vos_optimized:
+        hydra_overrides = [
+            "++model._target_=sam2.sam2_camera_predictor.SAM2CameraPredictorVOS",
+        ]
+
     if apply_postprocessing:
         hydra_overrides_extra = hydra_overrides_extra.copy()
         hydra_overrides_extra += [
